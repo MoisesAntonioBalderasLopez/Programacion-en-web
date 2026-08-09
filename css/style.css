@@ -227,3 +227,21 @@ form div {
         padding: 50px 40px;
     }
 }
+
+.mensaje-error {
+    color: #ff6b6b;
+    background-color: #2a1a1a;
+    border: 1px solid #DA3E44;
+    border-radius: 6px;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+}
+
+.mensaje-exito {
+    color: #6bff6b;
+    background-color: #1a2a1a;
+    border: 1px solid #4CAF50;
+    border-radius: 6px;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+}
