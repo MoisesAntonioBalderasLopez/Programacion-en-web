@@ -67,12 +67,38 @@ var vehiculos = [
 
 var vehiculoSeleccionado = null;
 
-function generarListaVehiculos() {
-    var contenedor = document.getElementById("vehiculos-grid");
-    contenedor.innerHTML = "";
+function filtrarVehiculos() {
+    var textoBusqueda = document.getElementById("busqueda-vehiculo").value.toLowerCase().trim();
+    var marcaSeleccionada = document.getElementById("filtro-marca").value;
+
+    var resultados = [];
 
     for (var i = 0; i < vehiculos.length; i++) {
         var vehiculo = vehiculos[i];
+        var coincideTexto = vehiculo.marca.toLowerCase().indexOf(textoBusqueda) !== -1 ||
+                            vehiculo.modelo.toLowerCase().indexOf(textoBusqueda) !== -1;
+        var coincideMarca = marcaSeleccionada === "" || vehiculo.marca === marcaSeleccionada;
+
+        if (coincideTexto && coincideMarca) {
+            resultados.push(vehiculo);
+        }
+    }
+
+    generarListaVehiculos(resultados);
+}
+
+function generarListaVehiculos(vehiculosAMostrar) {
+    var lista = vehiculosAMostrar || vehiculos;
+    var contenedor = document.getElementById("vehiculos-grid");
+    contenedor.innerHTML = "";
+
+    if (lista.length === 0) {
+        contenedor.innerHTML = '<div class="sin-resultados">No se encontraron vehículos que coincidan con tu búsqueda.</div>';
+        return;
+    }
+
+    for (var i = 0; i < lista.length; i++) {
+        var vehiculo = lista[i];
 
         var tarjeta = document.createElement("div");
         tarjeta.className = "vehiculo-card";
@@ -237,4 +263,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     var formulario = document.getElementById("formulario-reserva");
     formulario.addEventListener("submit", manejarEnvioFormulario);
+
+    // Listeners para búsqueda en tiempo real
+    var campoBusqueda = document.getElementById("busqueda-vehiculo");
+    campoBusqueda.addEventListener("input", filtrarVehiculos);
+
+    var filtroMarca = document.getElementById("filtro-marca");
+    filtroMarca.addEventListener("change", filtrarVehiculos);
 });

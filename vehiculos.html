@@ -24,6 +24,28 @@
             <section>
                 <h2>Nuestra Flota</h2>
                 <p>Selecciona el vehículo que deseas rentar haciendo clic sobre él.</p>
+
+                <div class="busqueda-container">
+                    <div class="busqueda-campo">
+                        <label for="busqueda-vehiculo">🔍 Buscar:</label>
+                        <input type="text" id="busqueda-vehiculo" placeholder="Buscar por marca o modelo...">
+                    </div>
+                    <div class="busqueda-campo">
+                        <label for="filtro-marca">🏷️ Filtrar por marca:</label>
+                        <select id="filtro-marca">
+                            <option value="">Todas las marcas</option>
+                            <option value="Toyota">Toyota</option>
+                            <option value="Honda">Honda</option>
+                            <option value="Ford">Ford</option>
+                            <option value="Chevrolet">Chevrolet</option>
+                            <option value="BMW">BMW</option>
+                            <option value="Mercedes-Benz">Mercedes-Benz</option>
+                            <option value="Nissan">Nissan</option>
+                            <option value="Volkswagen">Volkswagen</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div id="vehiculos-grid" class="vehiculos-grid"></div>
             </section>
 
