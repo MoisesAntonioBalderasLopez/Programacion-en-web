@@ -1,3 +1,9 @@
+/*
+ * vehiculos.js - Logica de la pagina de vehiculos
+ * Incluye: lista de vehiculos, busqueda dinamica, filtrado por marca,
+ * seleccion de vehiculo y validacion del formulario de reserva
+ */
+
 var vehiculos = [
     {
         id: 1,
@@ -67,6 +73,7 @@ var vehiculos = [
 
 var vehiculoSeleccionado = null;
 
+/*Funcion para filtrar vehiculos por texto y marca en tiempo real*/
 function filtrarVehiculos() {
     var textoBusqueda = document.getElementById("busqueda-vehiculo").value.toLowerCase().trim();
     var marcaSeleccionada = document.getElementById("filtro-marca").value;
@@ -87,6 +94,7 @@ function filtrarVehiculos() {
     generarListaVehiculos(resultados);
 }
 
+/*Funcion para generar las tarjetas de vehiculos en el grid*/
 function generarListaVehiculos(vehiculosAMostrar) {
     var lista = vehiculosAMostrar || vehiculos;
     var contenedor = document.getElementById("vehiculos-grid");
@@ -127,6 +135,7 @@ function generarListaVehiculos(vehiculosAMostrar) {
     }
 }
 
+/*Funcion para seleccionar un vehiculo y actualizar el formulario*/
 function seleccionarVehiculo(vehiculo, tarjeta) {
     var todasLasTarjetas = document.querySelectorAll(".vehiculo-card");
     for (var i = 0; i < todasLasTarjetas.length; i++) {
@@ -143,12 +152,19 @@ function seleccionarVehiculo(vehiculo, tarjeta) {
         '<strong>' + vehiculo.marca + ' ' + vehiculo.modelo + '</strong> — ' +
         vehiculo.anio + ' — $' + vehiculo.precio.toLocaleString("es-MX") + ' MXN/día';
 
+    /*Actualizar el campo oculto con el ID del vehiculo seleccionado*/
+    var campoId = document.getElementById("vehiculo-id");
+    if (campoId) {
+        campoId.value = vehiculo.id;
+    }
+
     document.getElementById("seccion-reserva").scrollIntoView({
         behavior: "smooth",
         block: "center"
     });
 }
 
+/*Funcion para validar el formulario antes de enviarlo*/
 function validarFormulario(fechaInicio, fechaFin) {
     if (!vehiculoSeleccionado) {
         alert("Por favor, selecciona un vehículo de la lista antes de reservar.");
@@ -171,6 +187,7 @@ function validarFormulario(fechaInicio, fechaFin) {
     return true;
 }
 
+/*Funcion para calcular el costo total de la renta*/
 function calcularCostoTotal(fechaInicio, fechaFin, precioPorDia) {
     var inicio = new Date(fechaInicio);
     var fin = new Date(fechaFin);
@@ -184,87 +201,44 @@ function calcularCostoTotal(fechaInicio, fechaFin, precioPorDia) {
     };
 }
 
+/*Funcion para formatear una fecha en formato legible en español*/
 function formatearFecha(fechaStr) {
     var opciones = { year: "numeric", month: "long", day: "numeric" };
     var fecha = new Date(fechaStr + "T00:00:00");
     return fecha.toLocaleDateString("es-MX", opciones);
 }
 
-function mostrarConfirmacion(vehiculo, fechaInicio, fechaFin, dias, costoTotal) {
-    var contenedor = document.getElementById("confirmacion-reserva");
-
-    contenedor.innerHTML =
-        '<div class="confirmacion-section">' +
-            '<div class="confirmacion-header">' +
-                '<span class="confirmacion-icon">✅</span>' +
-                '<div>' +
-                    '<div class="confirmacion-titulo">¡Reserva Confirmada!</div>' +
-                    '<div class="confirmacion-subtitulo">Resumen de tu reservación</div>' +
-                '</div>' +
-            '</div>' +
-            '<div class="confirmacion-grid">' +
-                '<div class="confirmacion-item">' +
-                    '<div class="confirmacion-item__label">Nombre del Vehículo</div>' +
-                    '<div class="confirmacion-item__valor">' + vehiculo.marca + '</div>' +
-                '</div>' +
-                '<div class="confirmacion-item">' +
-                    '<div class="confirmacion-item__label">Modelo del Vehículo</div>' +
-                    '<div class="confirmacion-item__valor">' + vehiculo.modelo + ' (' + vehiculo.anio + ')</div>' +
-                '</div>' +
-                '<div class="confirmacion-item">' +
-                    '<div class="confirmacion-item__label">Fecha de Inicio</div>' +
-                    '<div class="confirmacion-item__valor">' + formatearFecha(fechaInicio) + '</div>' +
-                '</div>' +
-                '<div class="confirmacion-item">' +
-                    '<div class="confirmacion-item__label">Fecha de Finalización</div>' +
-                    '<div class="confirmacion-item__valor">' + formatearFecha(fechaFin) + '</div>' +
-                '</div>' +
-                '<div class="confirmacion-item">' +
-                    '<div class="confirmacion-item__label">Fecha de Reserva</div>' +
-                    '<div class="confirmacion-item__valor">' + dias + (dias === 1 ? ' día' : ' días') + '</div>' +
-                '</div>' +
-                '<div class="confirmacion-item">' +
-                    '<div class="confirmacion-item__label">Precio por Día</div>' +
-                    '<div class="confirmacion-item__valor">$' + vehiculo.precio.toLocaleString("es-MX") + ' MXN</div>' +
-                '</div>' +
-                '<div class="confirmacion-item confirmacion-total">' +
-                    '<div class="confirmacion-item__label">Costo Total de la Renta</div>' +
-                    '<div class="confirmacion-item__valor">$' + costoTotal.toLocaleString("es-MX") + ' MXN</div>' +
-                '</div>' +
-            '</div>' +
-        '</div>';
-
-    contenedor.scrollIntoView({ behavior: "smooth", block: "center" });
-}
-
+/*Funcion para manejar el envio del formulario de reserva*/
 function manejarEnvioFormulario(evento) {
-    evento.preventDefault();
-
     var fechaInicio = document.getElementById("fecha-inicio").value;
     var fechaFin = document.getElementById("fecha-fin").value;
 
     if (!validarFormulario(fechaInicio, fechaFin)) {
+        evento.preventDefault();
         return;
     }
 
-    var calculo = calcularCostoTotal(fechaInicio, fechaFin, vehiculoSeleccionado.precio);
+    /*Si el usuario no tiene sesion activa, redirigir a login*/
+    if (typeof sesionActiva !== "undefined" && !sesionActiva) {
+        evento.preventDefault();
+        alert("Debes iniciar sesión para realizar una reserva.");
+        window.location.href = "login.php?redireccion=vehiculos";
+        return;
+    }
 
-    mostrarConfirmacion(
-        vehiculoSeleccionado,
-        fechaInicio,
-        fechaFin,
-        calculo.dias,
-        calculo.costoTotal
-    );
+    /*El formulario se enviara por POST a procesar_reserva.php*/
 }
 
+/*Inicializar la pagina cuando el DOM este listo*/
 document.addEventListener("DOMContentLoaded", function() {
     generarListaVehiculos();
 
     var formulario = document.getElementById("formulario-reserva");
-    formulario.addEventListener("submit", manejarEnvioFormulario);
+    if (formulario) {
+        formulario.addEventListener("submit", manejarEnvioFormulario);
+    }
 
-    // Listeners para búsqueda en tiempo real
+    /*Listeners para busqueda en tiempo real*/
     var campoBusqueda = document.getElementById("busqueda-vehiculo");
     campoBusqueda.addEventListener("input", filtrarVehiculos);
 

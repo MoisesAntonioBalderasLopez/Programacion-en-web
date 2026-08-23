@@ -1,253 +1,311 @@
-# 📄 Documentación — Sistema de Búsqueda y Filtros
+# 📄 Documentación — Sistema de Renta de Carros XYZ
 
-## Página de Renta de Carros XYZ
+## Proyecto Completo de Programación en Web
 
 **Materia:** Programación en Web  
 **Autor:** Moisés Antonio Balderas López  
-**Fecha:** 16 de agosto de 2026
+**Fecha:** 23 de agosto de 2026
 
 ---
 
 ## 📑 Índice
 
 1. [Descripción General](#1-descripción-general)
-2. [¿Qué se Implementó?](#2-qué-se-implementó)
-3. [Archivos Modificados](#3-archivos-modificados)
-4. [Guía de Uso — Cómo Probar el Sistema](#4-guía-de-uso--cómo-probar-el-sistema)
-5. [Pruebas Realizadas](#5-pruebas-realizadas)
-6. [Tecnologías Utilizadas](#6-tecnologías-utilizadas)
+2. [Funcionalidades Implementadas](#2-funcionalidades-implementadas)
+3. [Estructura de Archivos](#3-estructura-de-archivos)
+4. [Base de Datos](#4-base-de-datos)
+5. [Búsqueda Dinámica](#5-búsqueda-dinámica)
+6. [Autenticación de Usuarios](#6-autenticación-de-usuarios)
+7. [Verificación de Sesión para Reservas](#7-verificación-de-sesión-para-reservas)
+8. [Envío de Correo con PHPMailer](#8-envío-de-correo-con-phpmailer)
+9. [Redirección de Usuarios No Autenticados](#9-redirección-de-usuarios-no-autenticados)
+10. [Panel de Administración (CRUD)](#10-panel-de-administración-crud)
+11. [Guía de Instalación](#11-guía-de-instalación)
+12. [Tecnologías Utilizadas](#12-tecnologías-utilizadas)
 
 ---
 
 ## 1. Descripción General
 
-Se implementó un **sistema de búsqueda con JavaScript** en la página de renta de carros, que permite a los usuarios buscar vehículos por criterios como **marca** y **modelo**. La búsqueda es **dinámica** y actualiza los resultados en **tiempo real** sin recargar la página, brindando una experiencia de usuario fluida.
+Sistema web completo de **Renta de Carros XYZ** que permite a los usuarios explorar vehículos disponibles, buscar por marca o modelo en tiempo real, registrarse, iniciar sesión y realizar reservas de vehículos. El sistema incluye verificación de sesión, envío de correos de confirmación con PHPMailer, redirección de usuarios no autenticados y un panel de administración con CRUD completo usando DataTables.
 
 ---
 
-## 2. ¿Qué se Implementó?
+## 2. Funcionalidades Implementadas
 
-Se agregaron **dos controles de búsqueda/filtrado** en la página `vehiculos.html`:
-
-| Control | Tipo | Función |
-|---------|------|---------|
-| **Campo de búsqueda** | `<input type="text">` | Busca en tiempo real por marca o modelo conforme el usuario escribe |
-| **Filtro por marca** | `<select>` (menú desplegable) | Filtra los vehículos mostrando solo los de la marca seleccionada |
-
-### Características:
-
-- 🔍 **Búsqueda en tiempo real** — Los resultados se filtran al instante mientras se escribe, sin presionar Enter.
-- 🏷️ **Filtro por marca** — Menú desplegable con las 8 marcas disponibles + opción "Todas las marcas".
-- 🔄 **Filtros combinados** — Ambos filtros funcionan juntos (texto + marca).
-- 📱 **Sin recarga de página** — Todo el filtrado ocurre del lado del cliente con JavaScript puro.
-- ❌ **Mensaje de "sin resultados"** — Cuando no hay coincidencias, se muestra un aviso claro.
+| Funcionalidad | Descripción | Estado |
+|---------------|-------------|--------|
+| Estructura del sitio | HTML5 semántico + CSS responsive con tema oscuro | ✅ |
+| Búsqueda dinámica | Filtro en tiempo real por marca y modelo sin recargar | ✅ |
+| Autenticación | Registro e inicio de sesión con sesiones PHP | ✅ |
+| Verificación de sesión | Solo usuarios autenticados pueden reservar | ✅ |
+| Envío de correo | PHPMailer con SMTP de Gmail | ✅ |
+| Redirección | Usuarios no autenticados redirigidos a login | ✅ |
+| Panel admin CRUD | DataTables con crear, editar y eliminar usuarios | ✅ |
+| Cerrar sesión | Destruir sesión y redirigir al inicio | ✅ |
 
 ---
 
-## 3. Archivos Modificados
+## 3. Estructura de Archivos
 
-Se modificaron **3 archivos** del proyecto:
-
----
-
-### 3.1. `vehiculos.html` — Controles de búsqueda en el HTML
-
-**¿Qué se hizo?** Se agregó un contenedor con el campo de búsqueda y el filtro por marca, ubicado entre el título "Nuestra Flota" y el grid de vehículos.
-
-**Código agregado:**
-
-```html
-<div class="busqueda-container">
-    <div class="busqueda-campo">
-        <label for="busqueda-vehiculo">🔍 Buscar:</label>
-        <input type="text" id="busqueda-vehiculo" placeholder="Buscar por marca o modelo...">
-    </div>
-    <div class="busqueda-campo">
-        <label for="filtro-marca">🏷️ Filtrar por marca:</label>
-        <select id="filtro-marca">
-            <option value="">Todas las marcas</option>
-            <option value="Toyota">Toyota</option>
-            <option value="Honda">Honda</option>
-            <!-- ... demás marcas -->
-        </select>
-    </div>
-</div>
+```
+Programacion-en-web/
+├── index.html              → Página principal
+├── conocenos.html          → Información de la empresa
+├── contacto.html           → Formulario de contacto
+├── vehiculos.php           → Catálogo de vehículos + reserva (con sesión PHP)
+├── vehiculos.js            → Lógica JS: búsqueda, filtros, selección
+├── vehiculos.css           → Estilos para vehículos y panel admin
+├── login.php               → Inicio de sesión con redirección por tipo
+├── registro.php            → Registro de nuevos usuarios
+├── logout.php              → Cerrar sesión
+├── admin.php               → Panel de administración (CRUD + DataTables)
+├── admin_acciones.php      → Endpoints para acciones CRUD
+├── procesar_reserva.php    → Procesa reservas y envía correo
+├── enviar_correo.php       → Configuración de PHPMailer
+├── conexion.php            → Conexión a MySQL
+├── renta_carros.sql        → Schema de la base de datos
+├── css/
+│   └── style.css           → Estilos globales
+├── images/
+│   ├── index/              → Imágenes de la página principal
+│   ├── conocenos/          → Imágenes de conócenos
+│   └── vehiculos/          → Imágenes de los vehículos
+├── phpmailer/
+│   ├── Exception.php       → PHPMailer Exception
+│   ├── PHPMailer.php       → PHPMailer clase principal
+│   └── SMTP.php            → PHPMailer SMTP
+└── DOCUMENTACION.md        → Este archivo
 ```
 
 ---
 
-### 3.2. `vehiculos.js` — Lógica de filtrado en JavaScript
+## 4. Base de Datos
 
-**¿Qué se hizo?** Se agregaron/modificaron las siguientes funciones:
+### Nombre: `renta_carros`
 
-#### Nueva función: `filtrarVehiculos()`
+### Tabla: `usuarios`
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| ID | INT AUTO_INCREMENT | Identificador único |
+| Correo | VARCHAR(255) | Correo electrónico |
+| Contraseña | VARCHAR(10) | Contraseña del usuario |
+| Rol | VARCHAR(50) | Rol en su empresa |
+| Nombre | VARCHAR(255) | Nombre completo |
+| Tipo | ENUM('usuario','admin') | Tipo de usuario en el sistema |
 
-Esta es la función principal del sistema de búsqueda. Se ejecuta cada vez que el usuario escribe en el buscador o cambia el filtro de marca.
+### Tabla: `vehiculos`
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| ID | INT AUTO_INCREMENT | Identificador único |
+| Marca | VARCHAR(100) | Marca del vehículo |
+| Modelo | VARCHAR(100) | Modelo del vehículo |
+| Anio | INT(4) | Año del vehículo |
+| Precio | DECIMAL(10,2) | Precio por día en MXN |
+| Imagen | VARCHAR(255) | Ruta de la imagen |
 
+### Tabla: `reservas`
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| ID | INT AUTO_INCREMENT | Identificador único |
+| UsuarioID | INT (FK) | Referencia al usuario |
+| VehiculoID | INT (FK) | Referencia al vehículo |
+| FechaInicio | DATE | Fecha de inicio de la renta |
+| FechaFin | DATE | Fecha de fin de la renta |
+| Dias | INT | Número de días |
+| CostoTotal | DECIMAL(10,2) | Costo total calculado |
+| FechaReserva | DATETIME | Fecha y hora de la reserva |
+
+---
+
+## 5. Búsqueda Dinámica
+
+### Archivos involucrados:
+- `vehiculos.php` — Controles HTML (input + select)
+- `vehiculos.js` — Lógica de filtrado
+- `vehiculos.css` — Estilos
+
+### Características:
+- 🔍 **Búsqueda en tiempo real** al escribir (evento `input`)
+- 🏷️ **Filtro por marca** con menú desplegable (evento `change`)
+- 🔄 **Filtros combinados** — texto + marca funcionan juntos
+- 📱 **Sin recarga de página** — JavaScript puro del lado del cliente
+- ❌ **Mensaje "sin resultados"** cuando no hay coincidencias
+
+### Función principal:
 ```javascript
 function filtrarVehiculos() {
     var textoBusqueda = document.getElementById("busqueda-vehiculo").value.toLowerCase().trim();
     var marcaSeleccionada = document.getElementById("filtro-marca").value;
-
-    var resultados = [];
-
-    for (var i = 0; i < vehiculos.length; i++) {
-        var vehiculo = vehiculos[i];
-        // Busca coincidencias parciales en marca y modelo (insensible a mayúsculas)
-        var coincideTexto = vehiculo.marca.toLowerCase().indexOf(textoBusqueda) !== -1 ||
-                            vehiculo.modelo.toLowerCase().indexOf(textoBusqueda) !== -1;
-        // Filtra por marca si se seleccionó una específica
-        var coincideMarca = marcaSeleccionada === "" || vehiculo.marca === marcaSeleccionada;
-
-        if (coincideTexto && coincideMarca) {
-            resultados.push(vehiculo);
-        }
-    }
-
-    generarListaVehiculos(resultados);
+    // Filtra por coincidencia parcial en marca/modelo + marca seleccionada
 }
 ```
 
-#### Función modificada: `generarListaVehiculos(vehiculosAMostrar)`
+---
 
-Se modificó para aceptar un parámetro opcional con la lista filtrada. Si no se pasa parámetro, muestra todos. También se agregó el mensaje de "sin resultados".
+## 6. Autenticación de Usuarios
 
-#### Listeners registrados en `DOMContentLoaded`:
+### Registro (`registro.php`):
+- Formulario con campos: Nombre, Correo, Contraseña, Rol
+- Validación de campos vacíos
+- Verificación de correo duplicado
+- Tipo de usuario se asigna como `'usuario'` por defecto
+- Prepared statements para prevenir SQL injection
 
-```javascript
-// Búsqueda en tiempo real al escribir
-var campoBusqueda = document.getElementById("busqueda-vehiculo");
-campoBusqueda.addEventListener("input", filtrarVehiculos);
+### Login (`login.php`):
+- Verificación de credenciales contra la base de datos
+- Creación de sesión PHP con datos del usuario
+- Variables de sesión: `usuario_id`, `usuario_nombre`, `usuario_rol`, `usuario_correo`, `usuario_tipo`
+- Redirección automática según tipo:
+  - **Admin** → `admin.php`
+  - **Usuario** → `vehiculos.php`
 
-// Filtro al cambiar la marca seleccionada
-var filtroMarca = document.getElementById("filtro-marca");
-filtroMarca.addEventListener("change", filtrarVehiculos);
-```
-
-- **`input`** → Se dispara con cada tecla, dando resultados en tiempo real.
-- **`change`** → Se dispara al seleccionar una opción diferente en el `<select>`.
+### Cerrar sesión (`logout.php`):
+- Destruye todas las variables de sesión
+- Redirige a `index.html`
 
 ---
 
-### 3.3. `vehiculos.css` — Estilos de los controles
+## 7. Verificación de Sesión para Reservas
 
-**¿Qué se hizo?** Se agregaron estilos para la barra de búsqueda, el filtro y el mensaje de sin resultados, manteniendo el tema oscuro del sitio.
+### Archivo: `vehiculos.php`
 
-**Clases CSS agregadas:**
+**Funcionamiento:**
+1. Al cargar la página, se verifica si existe `$_SESSION["usuario_id"]`
+2. Si **hay sesión**: se muestra el formulario completo de reserva
+3. Si **no hay sesión**: se muestra un mensaje indicando que debe iniciar sesión, con enlaces a login y registro
+4. Variable JavaScript `sesionActiva` se inyecta desde PHP para validación del lado del cliente
 
-| Clase | Descripción |
-|-------|-------------|
-| `.busqueda-container` | Contenedor flex que agrupa ambos controles |
-| `.busqueda-campo` | Cada campo individual (label + input/select) |
-| `.busqueda-campo input:focus` | Efecto de borde rojo al enfocar el campo |
-| `.sin-resultados` | Mensaje centrado cuando no hay coincidencias |
+### Archivo: `procesar_reserva.php`
 
----
-
-## 4. Guía de Uso — Cómo Probar el Sistema
-
-### Paso 1: Abrir la página
-
-Abrir `vehiculos.html` en el navegador (o a través de XAMPP en `http://localhost/Programacion-en-web/vehiculos.html`).
-
-> 📸 **CAPTURA 1:** Captura de la página completa mostrando la barra de búsqueda y filtro con todos los vehículos visibles.
+**Proceso de reserva:**
+1. Verifica sesión activa (doble verificación: cliente + servidor)
+2. Valida datos del formulario (vehículo, fechas)
+3. Calcula días y costo total
+4. Guarda la reserva en la tabla `reservas`
+5. Envía correo de confirmación con PHPMailer
+6. Redirige de vuelta a `vehiculos.php` con mensaje de éxito
 
 ---
 
-### Paso 2: Probar la búsqueda por texto
+## 8. Envío de Correo con PHPMailer
 
-Escribir "Toyota" en el campo de búsqueda. Solo debe aparecer el Toyota Corolla.
+### Archivo: `enviar_correo.php`
 
-> 📸 **CAPTURA 2:** Captura con "Toyota" escrito en el buscador y solo el Toyota Corolla visible en el grid.
+**Configuración:**
+- Servidor SMTP: `smtp.gmail.com`
+- Puerto: `587`
+- Encriptación: `STARTTLS`
+- Autenticación: Correo de Gmail + Contraseña de aplicación
 
----
+**Para configurar el correo:**
+1. Abrir `enviar_correo.php`
+2. Reemplazar `'TU_CORREO@gmail.com'` con tu correo de Gmail
+3. Reemplazar `'TU_CONTRASENA_APP'` con tu contraseña de aplicación
+4. Para obtener la contraseña de aplicación: https://myaccount.google.com/apppasswords
 
-### Paso 3: Probar búsqueda parcial
-
-Borrar el texto anterior y escribir "mus". Debe aparecer solo el Ford Mustang.
-
-> 📸 **CAPTURA 3:** Captura con "mus" escrito en el buscador y solo el Ford Mustang visible.
-
----
-
-### Paso 4: Probar el filtro por marca
-
-Limpiar el buscador. Seleccionar "BMW" en el menú desplegable de marcas. Solo debe aparecer el BMW Serie 3.
-
-> 📸 **CAPTURA 4:** Captura con el filtro "BMW" seleccionado y solo el BMW Serie 3 visible.
-
----
-
-### Paso 5: Probar la combinación de filtros
-
-Seleccionar "Ford" en el filtro de marca y escribir "mus" en el buscador. Solo debe aparecer el Ford Mustang.
-
-> 📸 **CAPTURA 5:** Captura con filtro "Ford" + texto "mus" mostrando solo el Mustang.
+**Contenido del correo:**
+- Formato HTML con diseño que coincide con el tema del sitio
+- Detalles: vehículo, fechas, días, precio por día, costo total
+- Texto alternativo para clientes que no soportan HTML
 
 ---
 
-### Paso 6: Probar búsqueda sin resultados
+## 9. Redirección de Usuarios No Autenticados
 
-Escribir "Ferrari" en el buscador. Debe aparecer el mensaje "No se encontraron vehículos que coincidan con tu búsqueda."
+### Flujo de redirección:
 
-> 📸 **CAPTURA 6:** Captura con "Ferrari" escrito y el mensaje de sin resultados visible.
-
----
-
-### Paso 7: Restablecer filtros
-
-Borrar el texto del buscador y seleccionar "Todas las marcas". Deben reaparecer los 8 vehículos.
-
-> 📸 **CAPTURA 7:** Captura con todos los filtros restablecidos y los 8 vehículos visibles nuevamente.
+1. Usuario sin sesión intenta reservar en `vehiculos.php`
+2. El formulario no se muestra, solo un mensaje con enlace a login
+3. Si intenta acceder directamente a `procesar_reserva.php` sin sesión:
+   - Se redirige a `login.php?redireccion=vehiculos`
+4. En `login.php`, se muestra mensaje: "Debes iniciar sesión para completar una reserva"
+5. Después de hacer login exitoso, se redirige automáticamente a `vehiculos.php`
 
 ---
 
-## 5. Pruebas Realizadas
+## 10. Panel de Administración (CRUD)
 
-### 5.1. Pruebas de Búsqueda por Texto
+### Archivo: `admin.php`
 
-| # | Caso de Prueba | Entrada | Resultado Esperado | ¿Funciona? |
-|---|----------------|---------|-------------------|------------|
-| 1 | Búsqueda por marca completa | "Toyota" | Solo aparece Toyota Corolla | ✅ |
-| 2 | Búsqueda por modelo | "Mustang" | Solo aparece Ford Mustang | ✅ |
-| 3 | Búsqueda parcial | "Cor" | Aparece Toyota Corolla | ✅ |
-| 4 | Insensible a mayúsculas | "bmw" | Aparece BMW Serie 3 | ✅ |
-| 5 | Sin resultados | "Ferrari" | Mensaje "No se encontraron vehículos..." | ✅ |
-| 6 | Campo vacío | "" | Se muestran los 8 vehículos | ✅ |
+**Acceso:** Solo usuarios con `Tipo = 'admin'`
 
-### 5.2. Pruebas de Filtro por Marca
+**Funcionalidades:**
 
-| # | Caso de Prueba | Selección | Resultado Esperado | ¿Funciona? |
-|---|----------------|-----------|-------------------|------------|
-| 1 | Todas las marcas | "Todas las marcas" | Se muestran los 8 vehículos | ✅ |
-| 2 | Marca específica | "Honda" | Solo aparece Honda Civic | ✅ |
-| 3 | Filtro + búsqueda | Marca: "Ford" + texto: "mus" | Solo aparece Ford Mustang | ✅ |
+| Acción | Descripción |
+|--------|-------------|
+| **Crear** | Formulario para agregar nuevos usuarios con todos los campos |
+| **Leer** | Tabla DataTables con búsqueda, paginación y ordenamiento |
+| **Actualizar** | Modal de edición con todos los campos del usuario |
+| **Eliminar** | Confirmación antes de eliminar, protección contra auto-eliminación |
 
-### 5.3. Pruebas de Tiempo Real
+**DataTables:**
+- Librería jQuery DataTables para tabla interactiva
+- Búsqueda integrada en la tabla
+- Paginación automática
+- Ordenamiento por columnas
+- Traducido al español (es-MX)
+- Tema oscuro personalizado con CSS
 
-| # | Caso de Prueba | Acción | Resultado Esperado | ¿Funciona? |
-|---|----------------|--------|-------------------|------------|
-| 1 | Actualización al escribir | Escribir letra por letra | Resultados se actualizan con cada tecla | ✅ |
-| 2 | Actualización al borrar | Borrar texto | Resultados reaparecen conforme se borra | ✅ |
-| 3 | Sin recarga de página | Usar búsqueda y filtros | La página NO se recarga | ✅ |
+**Tabla de reservas:**
+- Vista de todas las reservas realizadas
+- Incluye datos del usuario, vehículo, fechas y costos
+- DataTables con las mismas funcionalidades
 
----
+### Archivo: `admin_acciones.php`
+- Maneja las acciones POST (crear, editar) y GET (eliminar)
+- Validación de permisos de administrador
+- Prepared statements para seguridad
+- Mensajes de confirmación/error
 
-## 6. Tecnologías Utilizadas
-
-| Tecnología | Uso en este sistema |
-|------------|-------------------|
-| **HTML5** | Estructura de los controles de búsqueda (`<input>`, `<select>`) |
-| **CSS3** | Estilos del buscador, animaciones de focus, mensaje sin resultados |
-| **JavaScript (Vanilla)** | Lógica de filtrado en tiempo real, manipulación del DOM, eventos `input` y `change` |
-
-### Puntos clave:
-
-- **Sin librerías externas** — Todo se hizo con JavaScript puro, sin jQuery ni frameworks.
-- **Evento `input`** — Se usa en vez de `keyup` para capturar también pegado de texto y autocompletado.
-- **`toLowerCase()` + `indexOf()`** — Para búsqueda parcial insensible a mayúsculas/minúsculas.
-- **`trim()`** — Para ignorar espacios al inicio/final del texto buscado.
+**Usuario administrador de prueba:**
+- Correo: `admin@rentacarrosxyz.com`
+- Contraseña: `admin123`
 
 ---
 
-> **Nota:** Para que el sistema funcione correctamente, solo es necesario abrir `vehiculos.html` en un navegador web moderno. No requiere servidor ni instalación adicional (aunque también funciona desde XAMPP).
+## 11. Guía de Instalación
+
+### Requisitos:
+- XAMPP con Apache y MySQL
+- PHP 7.4 o superior
+
+### Pasos:
+
+1. **Copiar archivos** a `C:\xampp\htdocs\Programacion-en-web\`
+
+2. **Iniciar XAMPP** — Activar Apache y MySQL
+
+3. **Crear la base de datos:**
+   - Abrir phpMyAdmin: `http://localhost/phpmyadmin`
+   - Importar el archivo `renta_carros.sql`
+   - O ejecutar las consultas SQL manualmente
+
+4. **Verificar conexión:**
+   - Abrir `conexion.php` y verificar que el puerto sea el correcto (por defecto `3307`)
+
+5. **Configurar correo (opcional):**
+   - Abrir `enviar_correo.php`
+   - Reemplazar las credenciales SMTP con tu correo de Gmail y contraseña de aplicación
+
+6. **Acceder al sistema:**
+   - URL: `http://localhost/Programacion-en-web/index.html`
+
+---
+
+## 12. Tecnologías Utilizadas
+
+| Tecnología | Uso |
+|------------|-----|
+| **HTML5** | Estructura semántica de todas las páginas |
+| **CSS3** | Diseño responsive, tema oscuro, animaciones |
+| **JavaScript** | Búsqueda dinámica, filtrado, validación, interactividad |
+| **PHP** | Backend: sesiones, autenticación, CRUD, procesamiento |
+| **MySQL** | Base de datos: usuarios, vehículos, reservas |
+| **PHPMailer** | Envío de correos de confirmación por SMTP |
+| **jQuery** | Requerido por DataTables |
+| **DataTables** | Tabla interactiva con búsqueda, paginación y ordenamiento |
+
+---
+
+> **Nota:** El sistema está diseñado para ejecutarse en un entorno local con XAMPP. Para producción, se recomienda implementar hashing de contraseñas, HTTPS y validación adicional del lado del servidor.

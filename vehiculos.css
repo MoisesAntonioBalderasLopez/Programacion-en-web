@@ -273,6 +273,179 @@
     color: #DA3E44;
 }
 
+/* Mensaje de sesion requerida */
+.mensaje-sesion-requerida {
+    background-color: #2a2a2a;
+    border: 2px dashed #DA3E44;
+    border-radius: 8px;
+    padding: 25px;
+    text-align: center;
+    color: #cccccc;
+}
+
+.mensaje-sesion-requerida a {
+    color: #DA3E44;
+    text-decoration: underline;
+}
+
+.mensaje-sesion-requerida a:hover {
+    color: #ff6b6b;
+}
+
+/* === Estilos del Panel de Administracion === */
+
+/* Badges para tipo de usuario */
+.badge-tipo {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.badge-admin {
+    background-color: #331a1b;
+    color: #DA3E44;
+    border: 1px solid #DA3E44;
+}
+
+.badge-usuario {
+    background-color: #1a2a1a;
+    color: #4CAF50;
+    border: 1px solid #4CAF50;
+}
+
+/* Botones de acciones en la tabla */
+.btn-editar,
+.btn-eliminar {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: bold;
+    margin: 2px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-editar {
+    background-color: #2196F3;
+    color: white;
+}
+
+.btn-editar:hover {
+    background-color: #1976D2;
+    transform: translateY(-1px);
+}
+
+.btn-eliminar {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-eliminar:hover {
+    background-color: #d32f2f;
+    transform: translateY(-1px);
+}
+
+/* Modal overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-contenido {
+    background-color: #222222;
+    border: 2px solid #DA3E44;
+    border-radius: 12px;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* DataTables tema oscuro */
+.dataTables_wrapper {
+    color: #f0f0f0;
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    color: #cccccc !important;
+    margin: 10px 0;
+}
+
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select {
+    background-color: #333333 !important;
+    color: #f0f0f0 !important;
+    border: 1px solid #555555 !important;
+    border-radius: 4px !important;
+    padding: 5px 10px !important;
+}
+
+table.dataTable {
+    border-collapse: collapse !important;
+}
+
+table.dataTable thead th {
+    background-color: #DA3E44 !important;
+    color: white !important;
+    border-bottom: 2px solid #c0353a !important;
+    padding: 12px 10px !important;
+}
+
+table.dataTable tbody td {
+    background-color: #2a2a2a !important;
+    color: #f0f0f0 !important;
+    border-bottom: 1px solid #444444 !important;
+    padding: 10px !important;
+}
+
+table.dataTable tbody tr:hover td {
+    background-color: #333333 !important;
+}
+
+table.dataTable tbody tr.odd td {
+    background-color: #252525 !important;
+}
+
+table.dataTable tbody tr.even td {
+    background-color: #2a2a2a !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: #f0f0f0 !important;
+    background-color: #333333 !important;
+    border: 1px solid #555555 !important;
+    border-radius: 4px !important;
+    margin: 0 2px !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: #DA3E44 !important;
+    color: white !important;
+    border-color: #DA3E44 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #DA3E44 !important;
+    color: white !important;
+    border-color: #DA3E44 !important;
+}
+
 @media (max-width: 768px) {
     .vehiculos-grid {
         grid-template-columns: 1fr;
@@ -280,5 +453,10 @@
 
     .confirmacion-grid {
         grid-template-columns: 1fr;
+    }
+
+    .modal-contenido {
+        width: 95%;
+        padding: 20px;
     }
 }

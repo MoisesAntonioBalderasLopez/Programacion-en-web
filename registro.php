@@ -1,5 +1,16 @@
 <?php
+/*
+ * Pagina de registro de usuarios
+ * Crea un nuevo usuario en la base de datos con tipo 'usuario' por defecto
+ */
+session_start();
 require_once 'conexion.php';
+
+/*Si ya tiene sesion activa, redirigir*/
+if (isset($_SESSION["usuario_id"])) {
+    header("Location: vehiculos.php");
+    exit();
+}
 
 $mensaje = "";
 $tipo_mensaje = "";
@@ -9,9 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $correo = trim($_POST["correo"]);
     $contrasena = trim($_POST["contrasena"]);
     $rol = trim($_POST["rol"]);
+    $tipo = "usuario"; /*Los usuarios registrados desde el formulario siempre son tipo 'usuario'*/
 
     /*Validar que los campos no esten vacios*/
-    if (empty($nombre) || empty($correo) || empty($correo) || empty($contrasena) || empty($rol)) {
+    if (empty($nombre) || empty($correo) || empty($contrasena) || empty($rol)) {
         $mensaje = "Todos los campos son obligatorios.";
         $tipo_mensaje = "error";
     } else {
@@ -26,11 +38,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $tipo_mensaje = "error";
         } else {
             /*Insertar el nuevo usuario*/
-            $insertar = $conexion->prepare("INSERT INTO usuarios (Correo, Contraseña, Rol, Nombre) VALUES (?, ?, ?, ?)");
-            $insertar->bind_param("ssss", $correo, $contrasena, $rol, $nombre);
+            $insertar = $conexion->prepare("INSERT INTO usuarios (Correo, Contraseña, Rol, Nombre, Tipo) VALUES (?, ?, ?, ?, ?)");
+            $insertar->bind_param("sssss", $correo, $contrasena, $rol, $nombre, $tipo);
 
             if ($insertar->execute()) {
-                $mensaje = "Usuario registrado exitosamente.";
+                $mensaje = "Usuario registrado exitosamente. Ahora puedes iniciar sesión.";
                 $tipo_mensaje = "exito";
             } else {
                 $mensaje = "Error al registrar el usuario.";
@@ -53,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="conocenos.html">Conócenos</a></li>
                 <li><a href="contacto.html">Contacto</a></li>
-                <li><a href="vehiculos.html">Vehículos</a></li>
+                <li><a href="vehiculos.php">Vehículos</a></li>
                 <li><a href="login.php">Iniciar Sesión</a></li>
                 <li><a href="#">Registrarse</a></li>
             </ul>
@@ -71,39 +83,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <?php echo $mensaje; ?>
                     </p>
                 <?php endif; ?>
-                <form method="POST" action="registro.php">
-                    <fieldset>
-                        <div>
-                            <label>Nombre:</label>
+                <?php if ($tipo_mensaje === "exito"): ?>
+                    <p><a href="login.php"><button type="button">Ir a Iniciar Sesión</button></a></p>
+                <?php else: ?>
+                    <form method="POST" action="registro.php">
+                        <fieldset>
+                            <div>
+                                <label>Nombre:</label>
+                                <br>
+                                <input type="text" name="nombre" required />
+                            </div>
                             <br>
-                            <input type="text" name="nombre" required />
-                        </div>
-                        <br>
-                        <div>
-                            <label>Correo Electrónico:</label>
+                            <div>
+                                <label>Correo Electrónico:</label>
+                                <br>
+                                <input type="email" name="correo" required />
+                            </div>
                             <br>
-                            <input type="email" name="correo" required />
-                        </div>
-                        <br>
-                        <div>
-                            <label>Contraseña:</label>
+                            <div>
+                                <label>Contraseña:</label>
+                                <br>
+                                <input type="password" name="contrasena" maxlength="10" required />
+                            </div>
                             <br>
-                            <input type="password" name="contrasena" maxlength="10" required />
-                        </div>
-                        <br>
-                        <div>
-                            <label>Rol:</label>
+                            <div>
+                                <label>Rol:</label>
+                                <br>
+                                <input type="text" name="rol" required />
+                            </div>
                             <br>
-                            <input type="text" name="rol" required />
-                        </div>
-                        <br>
-                        <div>
-                            <button type="submit">Registrarse</button>
-                        </div>
-                    </fieldset>
-                </form>
-                <br>
-                <p>¿Ya tienes cuenta? <a href="login.php">Iniciar Sesión</a></p>
+                            <div>
+                                <button type="submit">Registrarse</button>
+                            </div>
+                        </fieldset>
+                    </form>
+                    <br>
+                    <p>¿Ya tienes cuenta? <a href="login.php">Iniciar Sesión</a></p>
+                <?php endif; ?>
             </section>
         </main>
         <footer>

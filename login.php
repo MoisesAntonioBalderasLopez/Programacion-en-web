@@ -1,9 +1,23 @@
 <?php
+/*
+ * Pagina de inicio de sesion
+ * Verifica credenciales y redirige segun el tipo de usuario (admin o usuario)
+ */
 session_start();
 require_once 'conexion.php';
 
 $mensaje = "";
 $tipo_mensaje = "";
+
+/*Si ya tiene sesion activa, redirigir*/
+if (isset($_SESSION["usuario_id"])) {
+    if (isset($_SESSION["usuario_tipo"]) && $_SESSION["usuario_tipo"] === "admin") {
+        header("Location: admin.php");
+    } else {
+        header("Location: vehiculos.php");
+    }
+    exit();
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $correo = trim($_POST["correo"]);
@@ -15,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $tipo_mensaje = "error";
     } else {
         /*Verificar si el usuario existe*/
-        $consulta = $conexion->prepare("SELECT ID, Nombre, Contraseña, Rol FROM usuarios WHERE Correo = ?");
+        $consulta = $conexion->prepare("SELECT ID, Nombre, Contraseña, Rol, Tipo FROM usuarios WHERE Correo = ?");
         $consulta->bind_param("s", $correo);
         $consulta->execute();
         $resultado = $consulta->get_result();
@@ -29,9 +43,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION["usuario_nombre"] = $usuario["Nombre"];
                 $_SESSION["usuario_rol"] = $usuario["Rol"];
                 $_SESSION["usuario_correo"] = $correo;
+                $_SESSION["usuario_tipo"] = $usuario["Tipo"];
 
-                $mensaje = "Bienvenido, " . $usuario["Nombre"] . ". Has iniciado sesión correctamente.";
-                $tipo_mensaje = "exito";
+                /*Redirigir segun el tipo de usuario*/
+                if ($usuario["Tipo"] === "admin") {
+                    header("Location: admin.php");
+                    exit();
+                } else {
+                    /*Si viene de una redireccion, enviar a vehiculos*/
+                    if (isset($_GET["redireccion"]) && $_GET["redireccion"] === "vehiculos") {
+                        header("Location: vehiculos.php");
+                        exit();
+                    }
+                    header("Location: vehiculos.php");
+                    exit();
+                }
             } else {
                 $mensaje = "Contraseña incorrecta.";
                 $tipo_mensaje = "error";
@@ -43,6 +69,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $consulta->close();
     }
 }
+
+/*Verificar si viene redirigido desde vehiculos*/
+$redireccion = isset($_GET["redireccion"]) ? $_GET["redireccion"] : "";
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -55,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="conocenos.html">Conócenos</a></li>
                 <li><a href="contacto.html">Contacto</a></li>
-                <li><a href="vehiculos.html">Vehículos</a></li>
+                <li><a href="vehiculos.php">Vehículos</a></li>
                 <li><a href="#">Iniciar Sesión</a></li>
                 <li><a href="registro.php">Registrarse</a></li>
             </ul>
@@ -68,42 +97,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <main>
             <section>
                 <h2>Acceder a tu Cuenta</h2>
+                <?php if ($redireccion === "vehiculos"): ?>
+                    <p class="mensaje-error">
+                        🔒 Debes iniciar sesión para completar una reserva de vehículo.
+                    </p>
+                <?php endif; ?>
                 <?php if (!empty($mensaje)): ?>
                     <p class="mensaje-<?php echo $tipo_mensaje; ?>">
                         <?php echo $mensaje; ?>
                     </p>
                 <?php endif; ?>
-                <?php if (isset($_SESSION["usuario_id"]) && $tipo_mensaje == "exito"): ?>
-                    <p>
-                        <strong>Nombre:</strong> <?php echo $_SESSION["usuario_nombre"]; ?><br>
-                        <strong>Correo:</strong> <?php echo $_SESSION["usuario_correo"]; ?><br>
-                        <strong>Rol:</strong> <?php echo $_SESSION["usuario_rol"]; ?>
-                    </p>
-                    <br>
-                    <a href="vehiculos.html"><button type="button">Ir a Vehículos</button></a>
-                <?php else: ?>
-                    <form method="POST" action="login.php">
-                        <fieldset>
-                            <div>
-                                <label>Correo Electrónico:</label>
-                                <br>
-                                <input type="email" name="correo" required />
-                            </div>
+                <form method="POST" action="login.php<?php echo $redireccion ? '?redireccion=' . $redireccion : ''; ?>">
+                    <fieldset>
+                        <div>
+                            <label>Correo Electrónico:</label>
                             <br>
-                            <div>
-                                <label>Contraseña:</label>
-                                <br>
-                                <input type="password" name="contrasena" maxlength="10" required />
-                            </div>
+                            <input type="email" name="correo" required />
+                        </div>
+                        <br>
+                        <div>
+                            <label>Contraseña:</label>
                             <br>
-                            <div>
-                                <button type="submit">Iniciar Sesión</button>
-                            </div>
-                        </fieldset>
-                    </form>
-                    <br>
-                    <p>¿No tienes cuenta? <a href="registro.php">Registrarse</a></p>
-                <?php endif; ?>
+                            <input type="password" name="contrasena" maxlength="10" required />
+                        </div>
+                        <br>
+                        <div>
+                            <button type="submit">Iniciar Sesión</button>
+                        </div>
+                    </fieldset>
+                </form>
+                <br>
+                <p>¿No tienes cuenta? <a href="registro.php">Registrarse</a></p>
             </section>
         </main>
         <footer>
