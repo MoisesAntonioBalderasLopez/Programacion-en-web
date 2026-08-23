@@ -20,11 +20,11 @@ require_once __DIR__ . '/phpmailer/SMTP.php';
 function enviarCorreoConfirmacion($destinatario, $nombreUsuario, $vehiculo, $fechaInicio, $fechaFin, $dias, $costoTotal) {
     $mail = new PHPMailer(true);
 
-    /*=== CONFIGURACION SMTP - REEMPLAZA CON TUS DATOS ===*/
-    $correo_remitente = 'TU_CORREO@gmail.com';      /* <-- Pon tu correo de Gmail aqui */
-    $contrasena_app   = 'TU_CONTRASENA_APP';          /* <-- Pon tu contraseña de aplicacion aqui */
+    /*=== CONFIGURACION SMTP ===*/
+    $correo_remitente = 'marcobarzola01@gmail.com';
+    $contrasena_app   = 'rvtijeaehqbkxivl';
     $nombre_remitente = 'Renta de Carros XYZ';
-    /*=====================================================*/
+    /*==========================*/
 
     try {
         /*Configuracion del servidor SMTP*/
